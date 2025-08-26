@@ -48,7 +48,7 @@ export default function FormSignIn() {
         <CardHeader className="space-y-1">
           <CardTitle>Login to your account</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Enter your email & password to sign in
           </CardDescription>
           <CardAction className="flex justify-center">
             <Button variant="link">Sign Up</Button>
@@ -58,7 +58,7 @@ export default function FormSignIn() {
           {state.error !== "" && (
             <Alert variant="destructive">
               <AlertCircleIcon />
-              <AlertTitle>Unable to process your payment.</AlertTitle>
+              <AlertTitle>Unable to process your Sign In.</AlertTitle>
               <AlertDescription>{state.error}</AlertDescription>
             </Alert>
           )}
@@ -76,18 +76,18 @@ export default function FormSignIn() {
             <div className="grid gap-2">
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
-                <a
-                  href="#"
-                  className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                >
-                  Forgot your password?
-                </a>
               </div>
               <Input name="password" id="password" type="password" />
             </div>
           </div>
         </CardContent>
         <CardFooter className="flex-col gap-2">
+          <a
+            href="#"
+            className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+          >
+            Forgot your password?
+          </a>
           <SubmitButton />
         </CardFooter>
       </Card>
