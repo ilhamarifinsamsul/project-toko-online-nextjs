@@ -13,16 +13,35 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useFormState } from "react-dom";
+import { useFormStatus } from "react-dom";
+// import SignIn from "../lib/actions";
 import SignIn from "../lib/actions";
 import { ActionResult } from "@/types";
+
+import { useActionState } from "react";
+
+import { AlertCircleIcon } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const initialState: ActionResult = {
   error: "",
 };
 
+// komponen loading saat submit button
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <div className="flex w-full flex-col gap-2">
+      <Button type="submit" className="w-full" disabled={pending}>
+        {pending ? "Loading..." : "Sign In"}
+      </Button>
+    </div>
+  );
+}
+
 export default function FormSignIn() {
-  const [state, formAction] = useFormState(SignIn, initialState);
+  const [state, formAction] = useActionState(SignIn, initialState);
+  console.log("State form:", state);
   return (
     <form action={formAction}>
       <Card className="w-full max-w-sm rounded-xl shadow-lg">
@@ -36,6 +55,14 @@ export default function FormSignIn() {
           </CardAction>
         </CardHeader>
         <CardContent>
+          {state.error !== "" && (
+            <Alert variant="destructive">
+              <AlertCircleIcon />
+              <AlertTitle>Unable to process your payment.</AlertTitle>
+              <AlertDescription>{state.error}</AlertDescription>
+            </Alert>
+          )}
+
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
@@ -44,7 +71,6 @@ export default function FormSignIn() {
                 id="email"
                 type="email"
                 placeholder="m@example.com"
-                required
               />
             </div>
             <div className="grid gap-2">
@@ -57,17 +83,12 @@ export default function FormSignIn() {
                   Forgot your password?
                 </a>
               </div>
-              <Input name="password" id="password" type="password" required />
+              <Input name="password" id="password" type="password" />
             </div>
           </div>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <Button type="submit" className="w-full">
-            Login
-          </Button>
-          <Button type="submit" variant="outline" className="w-full">
-            Login with Google
-          </Button>
+          <SubmitButton />
         </CardFooter>
       </Card>
     </form>
