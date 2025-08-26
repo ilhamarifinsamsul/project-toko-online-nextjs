@@ -23,6 +23,9 @@ import { useActionState } from "react";
 import { AlertCircleIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
+import { ThemeToggle } from "./theme-toggle";
+import Link from "next/link";
+
 const initialState: ActionResult = {
   error: "",
 };
@@ -43,16 +46,19 @@ export default function FormSignIn() {
   const [state, formAction] = useActionState(SignIn, initialState);
   console.log("State form:", state);
   return (
+    // <ThemeToggle />
+
     <form action={formAction}>
       <Card className="w-full max-w-sm rounded-xl shadow-lg">
+        <div className="flex justify-end top-4 right-4 mr-4">
+          <ThemeToggle />
+        </div>
+
         <CardHeader className="space-y-1">
           <CardTitle>Login to your account</CardTitle>
           <CardDescription>
             Enter your email & password to sign in
           </CardDescription>
-          <CardAction className="flex justify-center">
-            <Button variant="link">Sign Up</Button>
-          </CardAction>
         </CardHeader>
         <CardContent>
           {state.error !== "" && (
@@ -82,12 +88,21 @@ export default function FormSignIn() {
           </div>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <a
+          <CardAction className="flex justify-center">
+            <p className="text-sm text-muted-foreground">
+              Don&apos;t have an account?{" "}
+              <Link href="/" className="text-blue-500">
+                {" "}
+                Sign Up
+              </Link>
+            </p>
+          </CardAction>
+          {/* <a
             href="#"
             className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
           >
             Forgot your password?
-          </a>
+          </a> */}
           <SubmitButton />
         </CardFooter>
       </Card>
