@@ -1,6 +1,8 @@
 // validation with zod
 import { z } from "zod";
 
+export const ALLOW_MIME_TYPES = ["image/jpeg", "image/png", "image/jpg"];
+
 export const SignInSchema = z.object({
   email: z
     .string()
@@ -9,4 +11,10 @@ export const SignInSchema = z.object({
   password: z
     .string({ message: "Password is required" })
     .min(6, { message: "Password must be at least 6 characters long" }),
+});
+
+export const schemaCategory = z.object({
+  name: z
+    .string({ message: "Name is required" })
+    .min(3, { message: "Name must be at least 3 characters long" }),
 });
