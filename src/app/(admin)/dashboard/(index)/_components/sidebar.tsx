@@ -22,6 +22,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+import FormLogout from "./form-logout";
+
 export default function Sidebar() {
   return (
     <TooltipProvider>
@@ -125,6 +127,7 @@ export default function Sidebar() {
             <TooltipContent side="right">Castomers</TooltipContent>
           </Tooltip>
         </nav>
+        <FormLogout />
       </aside>
     </TooltipProvider>
   );
