@@ -5,6 +5,7 @@ import { Category } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { Edit } from "lucide-react";
 import Link from "next/link";
+import FormDelete from "./_components/form-delete";
 
 export const columns: ColumnDef<Category>[] = [
   {
@@ -28,6 +29,7 @@ export const columns: ColumnDef<Category>[] = [
               <Edit className="mr-2 h-4 w-4" /> Edit
             </Button>
           </Link>
+          <FormDelete id={category.id} />
         </div>
       );
     },
