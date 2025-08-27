@@ -63,7 +63,7 @@ export default function FormCategory({
               </Link>
             </Button>
             <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-              Category Controller
+              Category
             </h1>
             <div className="hidden items-center gap-2 md:ml-auto md:flex">
               <Button variant="outline" size="sm">
@@ -76,10 +76,8 @@ export default function FormCategory({
             <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
               <Card x-chunk="dashboard-07-chunk-0" className="w-[500px]">
                 <CardHeader>
-                  <CardTitle>Category Details</CardTitle>
-                  <CardDescription>
-                    Lipsum dolor sit amet, consectetur adipiscing elit
-                  </CardDescription>
+                  <CardTitle>Category Name</CardTitle>
+                  <CardDescription>Input the category name</CardDescription>
                 </CardHeader>
                 <CardContent>
                   {state.error !== "" && (
