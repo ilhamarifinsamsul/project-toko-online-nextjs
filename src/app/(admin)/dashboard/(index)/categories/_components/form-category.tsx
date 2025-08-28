@@ -20,6 +20,7 @@ import { useFormStatus } from "react-dom";
 import { postCategory, updateCategory } from "../lib/actions";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Category } from "@prisma/client";
+import { useRouter } from "next/navigation";
 
 const initialState: ActionResult = {
   error: "",
@@ -43,8 +44,16 @@ export default function FormCategory({
   type = "ADD",
   data = null,
 }: PropsCategoryForm) {
-  const updateCategoryWithId = (_: unknown, formData: FormData) =>
-    updateCategory(_, formData, data?.id);
+  const router = useRouter();
+  const updateCategoryWithId = async (_: unknown, formData: FormData) => {
+    const result = await updateCategory(_, formData, data?.id);
+    // kalau sukses tanpa error → redirect manual
+    if (!result.error) {
+      router.push("/dashboard/categories");
+      router.refresh();
+    }
+    return result;
+  };
 
   const [state, formAction] = useActionState(
     type === "ADD" ? postCategory : updateCategoryWithId,

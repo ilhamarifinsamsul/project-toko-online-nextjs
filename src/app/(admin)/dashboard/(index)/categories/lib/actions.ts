@@ -65,13 +65,14 @@ export async function updateCategory(
         name: validate.data.name,
       },
     });
+    return {
+      error: "",
+    };
   } catch (error) {
     console.log(error);
     return {
       error: "Failed to update category",
     };
-  } finally {
-    return redirect("/dashboard/categories");
   }
 }
 
