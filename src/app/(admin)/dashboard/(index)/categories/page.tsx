@@ -25,6 +25,11 @@ import Link from "next/link";
 import { columns } from "./columns";
 import { getCategories } from "./lib/data";
 
+async function CategoriesTable() {
+  const data = await getCategories();
+  return <DataTable columns={columns} data={data} />;
+}
+
 export default async function CategoriesPage() {
   const data = await getCategories();
   return (
