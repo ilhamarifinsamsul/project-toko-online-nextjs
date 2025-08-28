@@ -31,11 +31,14 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  searchPlaceholder?: string;
+  label?: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  searchPlaceholder = "Search...",
 }: DataTableProps<TData, TValue>) {
   const [globalFilter, setGlobalFilter] = React.useState("");
 
@@ -68,7 +71,7 @@ export function DataTable<TData, TValue>({
       {/* Search */}
       <div className="flex items-center justify-between">
         <Input
-          placeholder="Search category..."
+          placeholder={searchPlaceholder}
           value={globalFilter ?? ""}
           onChange={(e) => setGlobalFilter(e.target.value)}
           className="max-w-sm"
