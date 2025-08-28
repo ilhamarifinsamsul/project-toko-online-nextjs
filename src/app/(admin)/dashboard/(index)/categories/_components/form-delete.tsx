@@ -1,16 +1,27 @@
 // use client
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ActionResult } from "@/types";
 import { Trash } from "lucide-react";
 import { useFormStatus } from "react-dom";
 import { useActionState } from "react";
 import { deleteCategory } from "../lib/actions";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 const initialState: ActionResult = {
   error: "",
+  success: "",
 };
 
 interface FormDeleteProps {
@@ -42,9 +53,46 @@ export default function FormDelete({ id }: FormDeleteProps) {
     deleteCategoryWithId,
     initialState
   );
+
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (state.success) {
+      toast.success("Data berhasil dihapus");
+      setOpen(false);
+    }
+    if (state.error) {
+      toast.error(state.error);
+    }
+  }, [state.success, state.error]);
+
   return (
-    <form action={formAction}>
-      <SubmitButton />
-    </form>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="destructive" size="sm">
+          <Trash className="mr-2 h-4 w-4" /> Delete
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Konfirmasi Hapus</DialogTitle>
+          <DialogDescription>
+            Apakah Anda yakin ingin menghapus data ini?
+          </DialogDescription>
+        </DialogHeader>
+
+        <DialogFooter>
+          <DialogTrigger asChild>
+            <Button variant="outline" onClick={() => setOpen(false)}>
+              Batal
+            </Button>
+          </DialogTrigger>
+
+          <form action={formAction}>
+            <SubmitButton />
+          </form>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

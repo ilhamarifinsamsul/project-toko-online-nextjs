@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import { Toaster } from "sonner";
 
 export default function RootLayout({
   children,
@@ -15,6 +16,7 @@ export default function RootLayout({
           enableSystem
         >
           {children}
+          <Toaster position="bottom-right" toastOptions={{ duration: 5000 }} />
         </ThemeProvider>
       </body>
     </html>
