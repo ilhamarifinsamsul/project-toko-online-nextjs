@@ -39,6 +39,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   searchPlaceholder = "Search...",
+  label,
 }: DataTableProps<TData, TValue>) {
   const [globalFilter, setGlobalFilter] = React.useState("");
 
@@ -134,7 +135,7 @@ export function DataTable<TData, TValue>({
               Showing {startRow}–{endRow} of {totalRows} categories
             </>
           ) : (
-            "No categories available"
+            <>No {label ?? "data"} available</>
           )}
         </div>
 

@@ -54,6 +54,7 @@ export default async function LocationsPage() {
             columns={columns}
             data={data}
             searchPlaceholder="Search Location..."
+            label="Locations"
           />
         </CardContent>
       </Card>
