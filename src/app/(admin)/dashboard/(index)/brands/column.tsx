@@ -23,7 +23,7 @@ export const columns: ColumnDef<Brand>[] = [
       return (
         <div className="inner-flex items-center gap-5">
           <Image
-            src={getImageUrl(brand.logo)}
+            src={getImageUrl(brand.logo, "brands")}
             alt="Product"
             width={50}
             height={50}
