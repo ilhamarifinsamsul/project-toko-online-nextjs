@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "../../../../../../../lib/prisma";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 import { ActionResult } from "@/types";
 import { schemaLocation } from "@/lib/schema";
 
@@ -27,6 +27,7 @@ export async function postLocation(
     });
     return {
       error: "",
+      success: "Created Location successfully ✅",
     };
   } catch (error) {
     console.log(error);
@@ -34,7 +35,6 @@ export async function postLocation(
       error: "Failed to create location",
     };
   }
-  return redirect("/dashboard/locations");
 }
 
 export async function updateLocation(
@@ -69,6 +69,7 @@ export async function updateLocation(
     });
     return {
       error: "",
+      success: "Location updated successfully ✅",
     };
   } catch (error) {
     console.log(error);

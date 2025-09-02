@@ -21,6 +21,7 @@ import { postLocation, updateLocation } from "../lib/actions";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Location } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const initialState: ActionResult = {
   error: "",
@@ -49,6 +50,18 @@ export default function FormLocation({
     const result = await updateLocation(_, formData, data?.id);
     // kalau sukses tanpa error → redirect manual
     if (!result.error) {
+      toast.success(result.success);
+      router.push("/dashboard/locations");
+      router.refresh();
+    }
+    return result;
+  };
+
+  const submitLocation = async (_: unknown, formData: FormData) => {
+    const result = await postLocation(_, formData);
+    // kalau sukses tanpa error → redirect manual
+    if (!result.error) {
+      toast.success(result.success);
       router.push("/dashboard/locations");
       router.refresh();
     }
@@ -56,7 +69,7 @@ export default function FormLocation({
   };
 
   const [state, formAction] = useActionState(
-    type === "ADD" ? postLocation : updateLocationWithId,
+    type === "ADD" ? submitLocation : updateLocationWithId,
     initialState
   );
 

@@ -25,13 +25,15 @@ export async function postCategory(
         name: validate.data.name,
       },
     });
+    return {
+      error: "",
+      success: "Created Category successfully ✅",
+    };
   } catch (error) {
     console.log(error);
     return {
       error: "Failed to create category",
     };
-  } finally {
-    return redirect("/dashboard/categories");
   }
 }
 
@@ -67,6 +69,7 @@ export async function updateCategory(
     });
     return {
       error: "",
+      success: "Updated Category successfully ✅",
     };
   } catch (error) {
     console.log(error);

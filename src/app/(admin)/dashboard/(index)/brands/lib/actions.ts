@@ -1,11 +1,12 @@
 "use server";
 
 import { ActionResult } from "@/types";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 import prisma from "../../../../../../../lib/prisma";
 import { schemaBrand } from "@/lib/schema";
 import { uploadFile } from "@/lib/supabase";
 
+// action.ts
 export async function postBrand(
   _: unknown,
   formData: FormData
@@ -30,14 +31,17 @@ export async function postBrand(
         logo: fileName,
       },
     });
+
+    return {
+      error: "",
+      success: "Created Brand successfully ✅",
+    };
   } catch (error) {
     console.log(error);
     return {
       error: "Failed to create brand",
     };
   }
-
-  return redirect("/dashboard/brands");
 }
 
 export async function updateBrand(
@@ -57,39 +61,35 @@ export async function updateBrand(
   }
 
   const brand = await prisma.brand.findFirst({
-    where: {
-      id: id,
-    },
-    select: {
-      logo: true,
-    },
+    where: { id },
+    select: { logo: true },
   });
 
   let fileName = brand?.logo;
 
-  // ✅ cek apakah fileUpload adalah File
   if (fileUpload instanceof File && fileUpload.size > 0) {
     fileName = await uploadFile(fileUpload, "brands");
   }
 
   try {
     await prisma.brand.update({
-      where: {
-        id: id,
-      },
+      where: { id },
       data: {
         name: validate.data.name,
         logo: fileName || undefined,
       },
     });
+
+    return {
+      error: "",
+      success: "Updated Brand successfully ✅",
+    };
   } catch (error) {
     console.log(error);
     return {
       error: "Failed to update brand",
     };
   }
-
-  return redirect("/dashboard/brands");
 }
 
 export async function deleteBrand(

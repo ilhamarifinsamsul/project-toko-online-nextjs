@@ -19,6 +19,7 @@ import { Brand } from "@prisma/client";
 import { useActionState } from "react";
 import { postBrand, updateBrand } from "../lib/actions";
 import { ActionResult } from "@/types";
+import { toast } from "sonner";
 
 const initialState: ActionResult = {
   error: "",
@@ -44,18 +45,35 @@ export default function FormBrand({
   data = null,
 }: PropsBrandForm) {
   const router = useRouter();
+
   const updateBrandWithId = async (_: unknown, formData: FormData) => {
     const result = await updateBrand(_, formData, data?.id);
     // kalau sukses tanpa error → redirect manual
     if (!result.error) {
+      toast.success(result.success);
       router.push("/dashboard/brands");
       router.refresh();
+    } else {
+      toast.error(result.error);
+    }
+    return result;
+  };
+
+  const submitBrand = async (_: unknown, formData: FormData) => {
+    const result = await postBrand(_, formData);
+    // kalau sukses tanpa error → redirect manual
+    if (!result.error) {
+      toast.success(result.success);
+      router.push("/dashboard/brands");
+      router.refresh();
+    } else {
+      toast.error(result.error);
     }
     return result;
   };
 
   const [state, formAction] = useActionState(
-    type === "ADD" ? postBrand : updateBrandWithId,
+    type === "ADD" ? submitBrand : updateBrandWithId,
     initialState
   );
 

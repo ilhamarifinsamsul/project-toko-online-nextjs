@@ -21,9 +21,11 @@ import { postCategory, updateCategory } from "../lib/actions";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Category } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const initialState: ActionResult = {
   error: "",
+  success: "",
 };
 
 interface PropsCategoryForm {
@@ -49,14 +51,30 @@ export default function FormCategory({
     const result = await updateCategory(_, formData, data?.id);
     // kalau sukses tanpa error → redirect manual
     if (!result.error) {
+      toast.success(result.success);
       router.push("/dashboard/categories");
       router.refresh();
+    } else {
+      toast.error(result.error);
+    }
+    return result;
+  };
+
+  const submitCategory = async (_: unknown, formData: FormData) => {
+    const result = await postCategory(_, formData);
+    // kalau sukses tanpa error → redirect manual
+    if (!result.error) {
+      toast.success(result.success);
+      router.push("/dashboard/categories");
+      router.refresh();
+    } else {
+      toast.error(result.error);
     }
     return result;
   };
 
   const [state, formAction] = useActionState(
-    type === "ADD" ? postCategory : updateCategoryWithId,
+    type === "ADD" ? submitCategory : updateCategoryWithId,
     initialState
   );
 
