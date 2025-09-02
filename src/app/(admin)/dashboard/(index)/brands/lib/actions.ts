@@ -91,3 +91,33 @@ export async function updateBrand(
 
   return redirect("/dashboard/brands");
 }
+
+export async function deleteBrand(
+  _: unknown,
+  id: number | undefined,
+  formData: FormData
+): Promise<ActionResult> {
+  if (!id === undefined) {
+    return {
+      error: "Brand not found",
+      success: "",
+    };
+  }
+
+  try {
+    await prisma.brand.delete({
+      where: { id },
+    });
+
+    return {
+      error: "",
+      success: "Brand deleted successfully",
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      error: "Failed to delete brand",
+      success: "",
+    };
+  }
+}

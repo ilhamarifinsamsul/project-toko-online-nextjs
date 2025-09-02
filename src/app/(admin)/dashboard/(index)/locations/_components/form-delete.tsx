@@ -18,6 +18,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const initialState: ActionResult = {
   error: "",
@@ -46,6 +47,7 @@ function SubmitButton() {
 }
 
 export default function FormDelete({ id }: FormDeleteProps) {
+  const router = useRouter();
   const deleteCategoryWithId = (_: unknown, formData: FormData) =>
     deleteLocation(_, id, formData);
 
@@ -58,13 +60,21 @@ export default function FormDelete({ id }: FormDeleteProps) {
 
   useEffect(() => {
     if (state.success) {
-      toast.success("Data berhasil dihapus");
+      toast.success(state.success);
+
+      // 🔄 refresh data table
+      router.refresh();
+
+      // ⏩ redirect otomatis setelah delete
+      router.push("/dashboard/categories");
+
       setOpen(false);
     }
+
     if (state.error) {
       toast.error(state.error);
     }
-  }, [state.success, state.error]);
+  }, [state.success, state.error, router]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

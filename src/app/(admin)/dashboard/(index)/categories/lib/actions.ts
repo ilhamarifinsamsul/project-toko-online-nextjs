@@ -89,16 +89,17 @@ export async function deleteCategory(
 
   try {
     await prisma.category.delete({
-      where: {
-        id: id,
-      },
+      where: { id },
     });
+
+    return {
+      error: "",
+      success: "Category deleted successfully",
+    };
   } catch (error) {
     console.log(error);
     return {
       error: "Failed to delete category",
     };
-  } finally {
-    return redirect("/dashboard/categories");
   }
 }

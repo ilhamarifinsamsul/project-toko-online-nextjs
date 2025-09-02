@@ -1,6 +1,6 @@
 import { Tedit } from "@/types";
 import React from "react";
-import FormBrand from "../../create/_components/form-brand";
+import FormBrand from "../../_components/form-brand";
 import { getBrandById } from "../../lib/data";
 import { redirect } from "next/navigation";
 

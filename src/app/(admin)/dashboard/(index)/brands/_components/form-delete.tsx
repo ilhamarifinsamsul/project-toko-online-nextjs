@@ -6,7 +6,7 @@ import { ActionResult } from "@/types";
 import { Trash } from "lucide-react";
 import { useFormStatus } from "react-dom";
 import { useActionState } from "react";
-import { deleteCategory } from "../lib/actions";
+import { deleteBrand } from "../lib/actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,7 +18,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"; // ⬅️ tambah ini
 
 const initialState: ActionResult = {
   error: "",
@@ -31,16 +31,14 @@ interface FormDeleteProps {
 
 function SubmitButton() {
   const { pending } = useFormStatus();
-
   return (
     <Button
       type="submit"
-      variant={"destructive"}
       size={"sm"}
       disabled={pending}
+      variant={"destructive"}
     >
       <Trash className="mr-2 h-4 w-4" />
-      {""}
       {pending ? "Deleting..." : "Delete"}
     </Button>
   );
@@ -48,25 +46,19 @@ function SubmitButton() {
 
 export default function FormDelete({ id }: FormDeleteProps) {
   const router = useRouter(); // ⬅️ inisialisasi router
-  const deleteCategoryWithId = (_: unknown, formData: FormData) =>
-    deleteCategory(_, id, formData);
 
-  const [state, formAction] = useActionState(
-    deleteCategoryWithId,
-    initialState
-  );
+  const deleteBrandWithId = (_: unknown, formData: FormData) =>
+    deleteBrand(_, id, formData);
 
+  const [state, formAction] = useActionState(deleteBrandWithId, initialState);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (state.success) {
       toast.success(state.success);
 
-      // 🔄 refresh data table
+      // revalidate data table tanpa reload full page
       router.refresh();
-
-      // ⏩ redirect otomatis setelah delete
-      router.push("/dashboard/categories");
 
       setOpen(false);
     }
@@ -85,9 +77,9 @@ export default function FormDelete({ id }: FormDeleteProps) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Konfirmasi Hapus</DialogTitle>
+          <DialogTitle>Delete Brand</DialogTitle>
           <DialogDescription>
-            Apakah Anda yakin ingin menghapus data ini?
+            Are you sure you want to delete this brand?
           </DialogDescription>
         </DialogHeader>
 
@@ -98,7 +90,8 @@ export default function FormDelete({ id }: FormDeleteProps) {
             </Button>
           </DialogTrigger>
 
-          <form action={formAction} name="id">
+          <form action={formAction}>
+            <input type="hidden" name="id" value={id} />
             <SubmitButton />
           </form>
         </DialogFooter>

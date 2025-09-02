@@ -25,14 +25,16 @@ export async function postLocation(
         name: validate.data.name,
       },
     });
+    return {
+      error: "",
+    };
   } catch (error) {
     console.log(error);
     return {
       error: "Failed to create location",
     };
-  } finally {
-    return redirect("/dashboard/locations");
   }
+  return redirect("/dashboard/locations");
 }
 
 export async function updateLocation(
@@ -89,16 +91,17 @@ export async function deleteLocation(
 
   try {
     await prisma.location.delete({
-      where: {
-        id: id,
-      },
+      where: { id },
     });
+
+    return {
+      error: "",
+      success: "Location deleted successfully",
+    };
   } catch (error) {
     console.log(error);
     return {
-      error: "Failed to delete location",
+      error: "Failed to delete Location",
     };
-  } finally {
-    return redirect("/dashboard/locations");
   }
 }

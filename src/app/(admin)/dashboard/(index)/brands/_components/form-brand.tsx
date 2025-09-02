@@ -17,7 +17,7 @@ import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import { Brand } from "@prisma/client";
 import { useActionState } from "react";
-import { postBrand, updateBrand } from "../../lib/actions";
+import { postBrand, updateBrand } from "../lib/actions";
 import { ActionResult } from "@/types";
 
 const initialState: ActionResult = {
