@@ -22,7 +22,7 @@ export const columns: ColumnDef<Brand>[] = [
     cell: ({ row }) => {
       const brand = row.original;
       return (
-        <div className="inner-flex items-center gap-5">
+        <div className="flex items-center gap-4">
           <Image
             src={getImageUrl(brand.logo, "brands")}
             alt="Product"

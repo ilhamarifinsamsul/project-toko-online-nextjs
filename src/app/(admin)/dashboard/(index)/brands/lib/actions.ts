@@ -4,7 +4,7 @@ import { ActionResult } from "@/types";
 // import { redirect } from "next/navigation";
 import prisma from "../../../../../../../lib/prisma";
 import { schemaBrand } from "@/lib/schema";
-import { uploadFile } from "@/lib/supabase";
+import { deleteFile, uploadFile } from "@/lib/supabase";
 
 // action.ts
 export async function postBrand(
@@ -104,7 +104,21 @@ export async function deleteBrand(
     };
   }
 
+  const brand = await prisma.brand.findFirst({
+    where: { id },
+    select: { logo: true },
+  });
+
+  if (!brand) {
+    return {
+      error: "Brand not found",
+      success: "",
+    };
+  }
+
   try {
+    deleteFile(brand.logo, "brands");
+
     await prisma.brand.delete({
       where: { id },
     });
