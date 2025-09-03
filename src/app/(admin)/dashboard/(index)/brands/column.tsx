@@ -47,7 +47,6 @@ export const columns: ColumnDef<Brand>[] = [
             </Button>
           </Link>
           <FormDelete id={brand.id} />
-          {/* <FormDelete id={location.id} /> */}
         </div>
       );
     },
