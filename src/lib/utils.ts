@@ -14,7 +14,7 @@ export const rupiah = (value: number) => {
 };
 
 // convert date to dd/mm/yyyy
-export const convertDate = (date: Date | null, format = "dd/mm/yyyy") => {
+export const convertDate = (date: Date | null, format = "DD/MM/YYYY") => {
   if (!date) {
     return dayjs().format(format);
   }

@@ -5,10 +5,13 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
 // Create a single supabase client for interacting with your database
 const supabase = createClient(supabaseUrl || "", supabaseKey || "");
 
-export const getImageUrl = (name: string, p0: string) => {
+export const getImageUrl = (
+  name: string,
+  path: "brands" | "products" = "brands"
+) => {
   const { data } = supabase.storage
     .from("belanja")
-    .getPublicUrl(`public/brands/${name}`);
+    .getPublicUrl(`public/${path}/${name}`);
 
   return data.publicUrl;
 };

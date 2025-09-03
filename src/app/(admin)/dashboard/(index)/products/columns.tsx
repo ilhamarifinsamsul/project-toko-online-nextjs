@@ -37,7 +37,7 @@ export const columns: ColumnDef<TColumn>[] = [
       return (
         <div className="flex items-center gap-4">
           <Image
-            src={getImageUrl(product.image_url, "brands")}
+            src={getImageUrl(product.image_url, "products")}
             alt="Product"
             width={50}
             height={50}

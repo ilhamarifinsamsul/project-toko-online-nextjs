@@ -38,3 +38,35 @@ export const schemaBrand = schemaCategory.extend({
       message: "File is required",
     }),
 });
+
+export const schemaProduct = z.object({
+  name: z
+    .string({ message: "Name is required" })
+    .min(3, { message: "Name must be at least 3 characters long" }),
+  description: z
+    .string({ message: "Description is required" })
+    .min(10, { message: "Description must be at least 3 characters long" }),
+  price: z.string({ message: "Price is required" }),
+  stock: z.string({ message: "Stock is required" }),
+  brand_id: z.string({ message: "Brand is required" }),
+  category_id: z.string({ message: "Category is required" }),
+  location_id: z.string({ message: "Location is required" }),
+  images: z
+    .any()
+    .refine((files: File[]) => files.length >= 3, {
+      message: "At least 3 images are required",
+    })
+    .refine(
+      (files: File[]) => {
+        let validate = false;
+
+        Array.from(files).find((file) => {
+          validate = ALLOW_MIME_TYPES.includes(file.type);
+        });
+        return validate;
+      },
+      {
+        message: "Invalid file type",
+      }
+    ),
+});

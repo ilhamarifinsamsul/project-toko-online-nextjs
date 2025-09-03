@@ -31,6 +31,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { storeProduct } from "../lib/actions";
+
 import { Textarea } from "@/components/ui/textarea";
 import UploadImages from "./upload-images";
 
@@ -53,8 +55,9 @@ function SubmitButton() {
 }
 
 export default function FormProduct({ children }: FormProductProps) {
+  const [state, formAction] = useActionState(storeProduct, initialState);
   return (
-    <form action="">
+    <form action={formAction}>
       <div className="grid flex-1 items-start gap-4 sm:px-6 sm:py-0 md:gap-8">
         <div className="mx-auto grid max-w-[59rem] flex-1 auto-rows-max gap-4">
           <div className="flex items-center space-x-4">
@@ -82,13 +85,13 @@ export default function FormProduct({ children }: FormProductProps) {
                   <CardDescription>Input the product name</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {/* {state.error !== "" && (
+                  {state.error !== "" && (
                     <Alert variant="destructive" className="mb-4">
                       <AlertCircle className="h-4 w-4" />
                       <AlertTitle>Error</AlertTitle>
                       <AlertDescription>{state.error}</AlertDescription>
                     </Alert>
-                  )} */}
+                  )}
 
                   <div className="grid gap-6">
                     <div className="grid gap-3">
@@ -101,15 +104,18 @@ export default function FormProduct({ children }: FormProductProps) {
                         placeholder="Product name"
                       />
                     </div>
+
                     <div className="grid gap-3">
                       <Label htmlFor="price">Price</Label>
-                      <Textarea
+                      <Input
                         id="price"
+                        type="number"
                         name="price"
                         // defaultValue={data?.price}
                         placeholder="Product Price"
                       />
                     </div>
+
                     <div className="grid gap-3">
                       <Label htmlFor="description">Description</Label>
                       <Textarea
