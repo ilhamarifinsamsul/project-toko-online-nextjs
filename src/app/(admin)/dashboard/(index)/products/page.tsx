@@ -14,8 +14,10 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { DataTable } from "@/components/ui/data-table";
 import { columns } from "./columns";
+import { getProducts } from "./lib/data";
 
-export default function Page() {
+export default async function Page() {
+  const data = await getProducts();
   return (
     <div className="space-y-4">
       <div className="text-left">
@@ -37,7 +39,7 @@ export default function Page() {
           <DataTable
             columns={columns}
             searchPlaceholder="Search Product..."
-            data={[]}
+            data={data}
             label="Products"
           />
         </CardContent>
