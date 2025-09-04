@@ -70,3 +70,10 @@ export const schemaProduct = z.object({
       }
     ),
 });
+
+// schema edit product
+export const schemaProductEdit = schemaProduct
+  .extend({
+    id: z.number({ message: "ProductId is required" }),
+  })
+  .omit({ images: true });

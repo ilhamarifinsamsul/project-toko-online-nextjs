@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useRef } from "react";
+import React, { ChangeEvent, useRef, useEffect } from "react";
 
 import {
   Card,
@@ -9,12 +9,53 @@ import {
 } from "@/components/ui/card";
 import { Upload } from "lucide-react";
 import Image from "next/image";
+import { getImageUrl } from "@/lib/supabase";
 
-export default function UploadImages() {
+// props default image
+interface UploadImageProps {
+  existingImages?: string[]; // Tambahkan prop untuk gambar yang sudah ada
+}
+
+export default function UploadImages({
+  existingImages = [],
+}: UploadImageProps) {
   const ref = useRef<HTMLInputElement>(null);
   const thumbnailRef = useRef<HTMLImageElement>(null);
   const imagesFirstRef = useRef<HTMLImageElement>(null);
   const imagesSecondRef = useRef<HTMLImageElement>(null);
+
+  // Effect untuk menampilkan gambar yang sudah ada saat komponen dimuat
+  useEffect(() => {
+    if (existingImages.length >= 3) {
+      if (thumbnailRef.current) {
+        thumbnailRef.current.src = getImageUrl(existingImages[0], "products");
+      }
+      if (imagesFirstRef.current) {
+        imagesFirstRef.current.src = getImageUrl(existingImages[1], "products");
+      }
+      if (imagesSecondRef.current) {
+        imagesSecondRef.current.src = getImageUrl(
+          existingImages[2],
+          "products"
+        );
+      }
+    } else if (existingImages.length > 0) {
+      // Fallback jika jumlah gambar kurang dari 3
+      if (thumbnailRef.current && existingImages[0]) {
+        thumbnailRef.current.src = getImageUrl(existingImages[0], "products");
+      }
+      if (imagesFirstRef.current && existingImages[1]) {
+        imagesFirstRef.current.src = getImageUrl(existingImages[1], "products");
+      }
+      if (imagesSecondRef.current && existingImages[2]) {
+        imagesSecondRef.current.src = getImageUrl(
+          existingImages[2],
+          "products"
+        );
+      }
+    }
+  }, [existingImages]);
+
   const openFolder = () => {
     if (ref.current) {
       ref.current.click();
@@ -35,6 +76,17 @@ export default function UploadImages() {
       thumbnailRef.current.src = URL.createObjectURL(e.target.files[0]);
       imagesFirstRef.current.src = URL.createObjectURL(e.target.files[1]);
       imagesSecondRef.current.src = URL.createObjectURL(e.target.files[2]);
+    } else if (e.target.files && e.target.files.length > 0) {
+      // Handle jika kurang dari 3 gambar diupload
+      if (e.target.files[0]) {
+        thumbnailRef.current.src = URL.createObjectURL(e.target.files[0]);
+      }
+      if (e.target.files[1]) {
+        imagesFirstRef.current.src = URL.createObjectURL(e.target.files[1]);
+      }
+      if (e.target.files[2]) {
+        imagesSecondRef.current.src = URL.createObjectURL(e.target.files[2]);
+      }
     }
   };
 
@@ -42,9 +94,7 @@ export default function UploadImages() {
     <Card className="overflow-hidden" x-chunk="dashboard-07-chunk-4">
       <CardHeader>
         <CardTitle>Product Images</CardTitle>
-        <CardDescription>
-          Lipsum dolor sit amet, consectetur adipiscing elit
-        </CardDescription>
+        <CardDescription>Upload atau Edit gambar produk</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="grid gap-2">

@@ -1,5 +1,6 @@
 import React from "react";
-import FormProduct from "../_components/form-product";
+import { Tedit } from "@/types";
+import FormProduct from "../../_components/form-product";
 import {
   Select,
   SelectContent,
@@ -8,20 +9,27 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { getBrands } from "../../brands/lib/data";
-import { getCategories } from "../../categories/lib/data";
-import { getLocations } from "../../locations/lib/data";
+import { getBrands } from "../../../brands/lib/data";
+import { getCategories } from "../../../categories/lib/data";
+import { getLocations } from "../../../locations/lib/data";
+import { getProductById } from "../../lib/data";
+import { redirect } from "next/navigation";
 
-export default async function CreatePage() {
+export default async function Page({ params }: Tedit) {
+  const data = await getProductById(params.id);
   const brands = await getBrands();
   const categories = await getCategories();
   const locations = await getLocations();
 
+  if (!data) {
+    return redirect("/dashboard/products");
+  }
+
   return (
-    <FormProduct type="ADD">
+    <FormProduct type="EDIT" data={data}>
       <div className="grid gap-3">
         <Label htmlFor="brand">Brand</Label>
-        <Select name="brand_id" defaultValue="default">
+        <Select name="brand_id" defaultValue={`${data.brand_id.toString()}`}>
           <SelectTrigger id="brand" aria-label="Select a brand">
             <SelectValue placeholder="Select a brand" />
           </SelectTrigger>
@@ -39,7 +47,10 @@ export default async function CreatePage() {
       </div>
       <div className="grid gap-3">
         <Label htmlFor="category">Category</Label>
-        <Select name="category_id" defaultValue="default">
+        <Select
+          name="category_id"
+          defaultValue={`${data.category_id.toString()}`}
+        >
           <SelectTrigger id="category" aria-label="Select a category">
             <SelectValue placeholder="Select a category" />
           </SelectTrigger>
@@ -57,7 +68,10 @@ export default async function CreatePage() {
       </div>
       <div className="grid gap-3">
         <Label htmlFor="location">Location</Label>
-        <Select name="location_id" defaultValue="default">
+        <Select
+          name="location_id"
+          defaultValue={`${data.location_id.toString()}`}
+        >
           <SelectTrigger id="location" aria-label="Select a location">
             <SelectValue placeholder="Select a location" />
           </SelectTrigger>

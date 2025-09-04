@@ -15,7 +15,7 @@ import { AlertCircle, ChevronLeft, Upload } from "lucide-react";
 import Link from "next/link";
 import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
-import { Brand } from "@prisma/client";
+import { Brand, Product } from "@prisma/client";
 import { ReactNode, useActionState } from "react";
 // import { postBrand, updateBrand } from "../lib/actions";
 import { ActionResult } from "@/types";
@@ -31,7 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { storeProduct } from "../lib/actions";
+import { storeProduct, updateProduct } from "../lib/actions";
 
 import { Textarea } from "@/components/ui/textarea";
 import UploadImages from "./upload-images";
@@ -42,9 +42,10 @@ const initialState: ActionResult = {
 };
 
 interface FormProductProps {
+  type: "ADD" | "EDIT";
   children?: ReactNode;
+  data?: Product | null;
 }
-
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
@@ -54,8 +55,18 @@ function SubmitButton() {
   );
 }
 
-export default function FormProduct({ children }: FormProductProps) {
-  const [state, formAction] = useActionState(storeProduct, initialState);
+export default function FormProduct({
+  children,
+  type,
+  data,
+}: FormProductProps) {
+  const updateProductWithId = (_: unknown, formData: FormData) =>
+    updateProduct(_, data?.id ?? 0, formData);
+
+  const [state, formAction] = useActionState(
+    type === "ADD" ? storeProduct : updateProductWithId,
+    initialState
+  );
   return (
     <form action={formAction}>
       <div className="grid flex-1 items-start gap-4 sm:px-6 sm:py-0 md:gap-8">
@@ -99,7 +110,7 @@ export default function FormProduct({ children }: FormProductProps) {
                       <Input
                         id="name"
                         name="name"
-                        // defaultValue={data?.name}
+                        defaultValue={data?.name}
                         type="text"
                         placeholder="Product name"
                       />
@@ -111,7 +122,7 @@ export default function FormProduct({ children }: FormProductProps) {
                         id="price"
                         type="number"
                         name="price"
-                        // defaultValue={data?.price}
+                        defaultValue={Number(data?.price ?? 0)}
                         placeholder="Product Price"
                       />
                     </div>
@@ -121,7 +132,7 @@ export default function FormProduct({ children }: FormProductProps) {
                       <Textarea
                         id="description"
                         name="description"
-                        // defaultValue={data?.description}
+                        defaultValue={data?.description}
                         placeholder="Product description"
                       />
                     </div>
@@ -145,7 +156,7 @@ export default function FormProduct({ children }: FormProductProps) {
                   <CardTitle>Product Status</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Select name="stock">
+                  <Select name="stock" defaultValue={data?.stock}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a status" />
                     </SelectTrigger>
@@ -159,7 +170,7 @@ export default function FormProduct({ children }: FormProductProps) {
                   </Select>
                 </CardContent>
               </Card>
-              <UploadImages />
+              <UploadImages existingImages={data?.image ?? []} />
             </div>
           </div>
           <div className="flex items-center justify-center gap-2 md:hidden">

@@ -1,7 +1,7 @@
 // use server
 "use server";
 
-import { schemaProduct } from "@/lib/schema";
+import { schemaProduct, schemaProductEdit } from "@/lib/schema";
 import { uploadFile } from "@/lib/supabase";
 import { ActionResult } from "@/types";
 import { redirect } from "next/navigation";
@@ -42,12 +42,12 @@ export async function storeProduct(
     await prisma.product.create({
       data: {
         name: validate.data.name,
-        price: Number(validate.data.price),
+        price: Number.parseInt(validate.data.price),
         description: validate.data.description,
         stock: validate.data.stock as Product["stock"],
-        brand_id: Number(validate.data.brand_id),
-        category_id: Number(validate.data.category_id),
-        location_id: Number(validate.data.location_id),
+        brand_id: Number.parseInt(validate.data.brand_id),
+        category_id: Number.parseInt(validate.data.category_id),
+        location_id: Number.parseInt(validate.data.location_id),
         image: fileNames,
       },
     });
@@ -55,6 +55,93 @@ export async function storeProduct(
     console.log(error);
     return {
       error: "Failed to create product",
+    };
+  }
+
+  return redirect("/dashboard/products");
+}
+
+// Fungsi update product
+export async function updateProduct(
+  _: unknown,
+  id: number | undefined,
+  formData: FormData
+): Promise<ActionResult> {
+  const validate = schemaProductEdit.safeParse({
+    name: formData.get("name"),
+    price: formData.get("price"),
+    description: formData.get("description"),
+    stock: formData.get("stock"),
+    brand_id: formData.get("brand_id"),
+    category_id: formData.get("category_id"),
+    location_id: formData.get("location_id"),
+    id: id,
+  });
+
+  if (!validate.success) {
+    return {
+      error: validate.error.issues[0].message,
+    };
+  }
+
+  //   ambil data product in database
+  const product = await prisma.product.findFirst({
+    where: { id },
+  });
+
+  if (!product) {
+    return {
+      error: "Product not found",
+    };
+  }
+
+  const uploadedImage = formData.getAll("images") as File[];
+  let fileNames = [];
+
+  if (uploadedImage.length === 3) {
+    const parseImages = schemaProduct
+      .pick({
+        images: true,
+      })
+      .safeParse({
+        images: uploadedImage,
+      });
+
+    if (!parseImages.success) {
+      return {
+        error: parseImages.error.issues[0].message,
+      };
+    }
+
+    for (const image of uploadedImage) {
+      const filename = await uploadFile(image, "products");
+      fileNames.push(filename);
+    }
+  } else {
+    fileNames = product.image;
+  }
+
+  //   try catch
+  try {
+    await prisma.product.update({
+      where: {
+        id: id,
+      },
+      data: {
+        name: validate.data.name,
+        price: Number.parseInt(validate.data.price),
+        description: validate.data.description,
+        stock: validate.data.stock as Product["stock"],
+        brand_id: Number.parseInt(validate.data.brand_id),
+        category_id: Number.parseInt(validate.data.category_id),
+        location_id: Number.parseInt(validate.data.location_id),
+        image: fileNames,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return {
+      error: "Failed to update product",
     };
   }
 

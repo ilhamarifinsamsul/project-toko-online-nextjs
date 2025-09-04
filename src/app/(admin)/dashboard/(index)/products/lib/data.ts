@@ -54,3 +54,17 @@ export async function getProducts() {
     return [];
   }
 }
+
+export async function getProductById(id: string) {
+  try {
+    const product = await prisma.product.findFirst({
+      where: {
+        id: Number.parseInt(id),
+      },
+    });
+    return product;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
