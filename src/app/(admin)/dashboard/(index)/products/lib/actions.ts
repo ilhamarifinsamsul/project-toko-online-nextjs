@@ -4,7 +4,6 @@
 import { schemaProduct, schemaProductEdit } from "@/lib/schema";
 import { uploadFile } from "@/lib/supabase";
 import { ActionResult } from "@/types";
-import { redirect } from "next/navigation";
 import prisma from "../../../../../../../lib/prisma";
 import { Product } from "@prisma/client";
 import { deleteFile } from "@/lib/supabase";
@@ -52,14 +51,17 @@ export async function storeProduct(
         image: fileNames,
       },
     });
+
+    return {
+      error: "",
+      success: "Created Product successfully ✅",
+    };
   } catch (error) {
     console.log(error);
     return {
       error: "Failed to create product",
     };
   }
-
-  return redirect("/dashboard/products");
 }
 
 // Fungsi update product
@@ -139,14 +141,17 @@ export async function updateProduct(
         image: fileNames,
       },
     });
+
+    return {
+      error: "",
+      success: "Updated Product successfully ✅",
+    };
   } catch (error) {
     console.log(error);
     return {
       error: "Failed to update product",
     };
   }
-
-  return redirect("/dashboard/products");
 }
 
 export async function deleteProduct(

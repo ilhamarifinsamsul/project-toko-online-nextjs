@@ -17,7 +17,6 @@ import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import { Brand, Product } from "@prisma/client";
 import { ReactNode, useActionState } from "react";
-// import { postBrand, updateBrand } from "../lib/actions";
 import { ActionResult } from "@/types";
 import { toast } from "sonner";
 import {
@@ -60,11 +59,35 @@ export default function FormProduct({
   type,
   data,
 }: FormProductProps) {
-  const updateProductWithId = (_: unknown, formData: FormData) =>
-    updateProduct(_, data?.id ?? 0, formData);
+  const router = useRouter();
+  const updateProductWithId = async (_: unknown, formData: FormData) => {
+    const result = await updateProduct(_, data?.id ?? 0, formData);
+    // kalau sukses tanpa error → redirect manual
+    if (!result.error) {
+      toast.success(result.success);
+      router.push("/dashboard/products");
+      router.refresh();
+    } else {
+      toast.error(result.error);
+    }
+    return result;
+  };
+
+  const submitProduct = async (_: unknown, formData: FormData) => {
+    const result = await storeProduct(_, formData);
+    // kalau sukses tanpa error → redirect manual
+    if (!result.error) {
+      toast.success(result.success);
+      router.push("/dashboard/products");
+      router.refresh();
+    } else {
+      toast.error(result.error);
+    }
+    return result;
+  };
 
   const [state, formAction] = useActionState(
-    type === "ADD" ? storeProduct : updateProductWithId,
+    type === "ADD" ? submitProduct : updateProductWithId,
     initialState
   );
   return (

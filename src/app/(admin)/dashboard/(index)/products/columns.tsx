@@ -28,7 +28,7 @@ export const columns: ColumnDef<TColumn>[] = [
   {
     id: "No",
     header: "No",
-    accessorKey: "id",
+    cell: ({ row }) => row.index + 1,
   },
   {
     accessorKey: "name",
@@ -40,8 +40,8 @@ export const columns: ColumnDef<TColumn>[] = [
           <Image
             src={getImageUrl(product.image_url, "products")}
             alt="Product"
-            width={50}
-            height={50}
+            width={80}
+            height={80}
           ></Image>
           <span className="font-medium">{product.name}</span>
         </div>
