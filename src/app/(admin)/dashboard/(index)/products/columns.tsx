@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import FormDelete from "./_components/form-delete";
 // import FormDelete from "./_components/form-delete";
 
 export type TColumn = {
@@ -87,7 +88,7 @@ export const columns: ColumnDef<TColumn>[] = [
               <Edit className="mr-2 h-4 w-4" /> Edit
             </Button>
           </Link>
-          {/* <FormDelete id={product.id} /> */}
+          <FormDelete id={product.id} />
         </div>
       );
     },

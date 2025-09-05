@@ -7,6 +7,7 @@ import { ActionResult } from "@/types";
 import { redirect } from "next/navigation";
 import prisma from "../../../../../../../lib/prisma";
 import { Product } from "@prisma/client";
+import { deleteFile } from "@/lib/supabase";
 
 export async function storeProduct(
   _: unknown,
@@ -146,4 +147,50 @@ export async function updateProduct(
   }
 
   return redirect("/dashboard/products");
+}
+
+export async function deleteProduct(
+  _: unknown,
+  id: number | undefined,
+  formData: FormData
+): Promise<ActionResult> {
+  if (!id === undefined) {
+    return {
+      error: "Product not found",
+      success: "",
+    };
+  }
+
+  const product = await prisma.product.findFirst({
+    where: { id },
+    select: { id: true, image: true },
+  });
+
+  if (!product) {
+    return {
+      error: "Product not found",
+      success: "",
+    };
+  }
+
+  // delete image yang ada di supabase
+  for (const image of product.image) {
+    deleteFile(image, "products");
+  }
+
+  try {
+    await prisma.product.delete({
+      where: { id },
+    });
+    return {
+      error: "",
+      success: "Deleted Product successfully ✅",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      error: "Failed to delete product",
+      success: "",
+    };
+  }
 }
