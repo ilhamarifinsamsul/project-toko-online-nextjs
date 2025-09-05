@@ -26,8 +26,8 @@ export const columns: ColumnDef<Brand>[] = [
           <Image
             src={getImageUrl(brand.logo, "brands")}
             alt="Product"
-            width={50}
-            height={50}
+            width={80}
+            height={80}
           ></Image>
           <span className="font-medium">{brand.name}</span>
         </div>

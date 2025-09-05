@@ -1,0 +1,35 @@
+import React from "react";
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+import { DataTable } from "@/components/ui/data-table";
+import { columns } from "./columns";
+import { getOrders } from "./lib/data";
+
+export default async function Page() {
+  const data = await getOrders();
+  return (
+    <div className="space-y-4">
+      <Card x-chunk="dashboard-06-chunk-0">
+        <CardHeader>
+          <CardTitle>Orders</CardTitle>
+          <CardDescription>Manage your order</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <DataTable
+            columns={columns}
+            searchPlaceholder="Search Order..."
+            data={data}
+            label="Orders"
+          />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

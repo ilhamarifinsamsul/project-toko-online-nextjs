@@ -15,7 +15,6 @@ import { PlusCircle } from "lucide-react";
 import { DataTable } from "@/components/ui/data-table";
 import { columns } from "./column";
 import { getBrands } from "./lib/data";
-// import { data } from "./data";
 
 export default async function Page() {
   const data = await getBrands();
