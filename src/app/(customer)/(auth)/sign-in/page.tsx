@@ -6,6 +6,8 @@ import React, { useState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import { useActionState } from "react";
 import SignIn from "../lib/actions";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 const initialFormState: ActionResult = {
   error: "",
@@ -27,9 +29,12 @@ function SumitButton() {
 
 export default function SignInPage() {
   const [state, formAction] = useActionState(SignIn, initialFormState);
+  // inisialisasi router
+  const searchParams = useSearchParams();
 
   // local state untuk kontrol visibilitas error
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -43,7 +48,7 @@ export default function SignInPage() {
 
       const clearMsg = setTimeout(() => {
         setErrorMessage("");
-      }, 5000); // clear message setelah 5 detik total
+      }, 4000); // clear message setelah 4 detik total
 
       return () => {
         clearTimeout(timer);
@@ -51,6 +56,23 @@ export default function SignInPage() {
       };
     }
   }, [state.error]);
+
+  // handle succes dari query param
+  useEffect(() => {
+    const success = searchParams.get("success");
+    if (success) {
+      setSuccessMessage(success);
+      setVisible(true);
+
+      const timer = setTimeout(() => setVisible(false), 4000);
+      const clearMsg = setTimeout(() => setSuccessMessage(""), 4000);
+
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(clearMsg);
+      };
+    }
+  }, [searchParams]);
 
   return (
     <div
@@ -118,6 +140,20 @@ export default function SignInPage() {
             </div>
           )}
 
+          {/* Success notif */}
+          {successMessage && (
+            <div
+              className={`border border-green-600 bg-green-50 rounded-md p-3 transition-opacity duration-1000 ${
+                visible ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <h4 className="font-semibold text-green-600">
+                Success
+                <p className="text-sm">{successMessage}</p>
+              </h4>
+            </div>
+          )}
+
           <div className="flex items-center gap-[10px] rounded-full border border-[#E5E5E5] p-[12px_20px] focus-within:ring-2 focus-within:ring-[#FFC736] transition-all duration-300">
             <div className="flex shrink-0">
               <img src="./assets/icons/sms.svg" alt="icon" />
@@ -155,12 +191,12 @@ export default function SignInPage() {
           </div>
           <div className="flex flex-col gap-3">
             <SumitButton />
-            <a
-              href="signup.html"
+            <Link
+              href="/sign-up"
               className="p-[12px_24px] bg-white rounded-full text-center font-semibold border border-[#E5E5E5]"
             >
               Sign Up
-            </a>
+            </Link>
           </div>
         </form>
       </div>

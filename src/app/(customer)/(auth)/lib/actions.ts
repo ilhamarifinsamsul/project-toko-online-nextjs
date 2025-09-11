@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { ActionResult } from "@/types";
-import { SignInSchema } from "@/lib/schema";
+import { schemaSignUp, SignInSchema } from "@/lib/schema";
 import prisma from "../../../../../lib/prisma";
 import bcrypt from "bcrypt"; // atau "bcryptjs" kalau mau lebih portable
 import { lucia } from "@/lib/auth";
@@ -62,4 +62,47 @@ export default async function SignIn(
 
   // Redirect kalau sukses
   return redirect("/");
+}
+
+// fungsi untuk sign-up
+export async function SignUp(
+  _: unknown,
+  formData: FormData
+): Promise<ActionResult> {
+  // melakukan validasi
+  const validate = schemaSignUp.safeParse({
+    name: formData.get("name"),
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
+
+  if (!validate.success) {
+    return {
+      error: validate.error.issues[0].message,
+    };
+  }
+
+  // hash password
+  const hashedPassword = await bcrypt.hashSync(validate.data.password, 12);
+
+  // buat user di database
+  try {
+    await prisma.user.create({
+      data: {
+        name: validate.data.name,
+        email: validate.data.email,
+        password: hashedPassword,
+        role: "customer",
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return {
+      error: "Failed to create user",
+    };
+  }
+
+  return redirect(
+    "/sign-in?success=Account created successfully, please login"
+  );
 }
