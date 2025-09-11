@@ -1,8 +1,9 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Navbar from "./_components/navbar";
 import ListCategory from "./_components/list-category";
 import ListProduct from "./_components/list-product";
 import ListBrand from "./_components/list-brand";
+import ListCategorySkeleton from "./_components/skeletons/ListCategorySkeleton";
 
 export default function LandingPage() {
   return (
@@ -142,7 +143,9 @@ export default function LandingPage() {
         id="content"
         className="container max-w-[1130px] mx-auto flex flex-col gap-[50px] pt-[50px] pb-[100px]"
       >
-        <ListCategory />
+        <Suspense fallback={<ListCategorySkeleton count={8} />}>
+          <ListCategory />
+        </Suspense>
         <ListProduct
           title={
             <>
