@@ -15,7 +15,7 @@ import { AlertCircle, ChevronLeft, Upload } from "lucide-react";
 import Link from "next/link";
 import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
-import { Brand, Product } from "@prisma/client";
+import { Brand, Product, Category, Location } from "@prisma/client";
 import { ReactNode, useActionState } from "react";
 import { ActionResult } from "@/types";
 import { toast } from "sonner";
@@ -41,8 +41,8 @@ const initialState: ActionResult = {
 };
 
 interface FormProductProps {
+  children: ReactNode;
   type: "ADD" | "EDIT";
-  children?: ReactNode;
   data?: Product | null;
 }
 function SubmitButton() {
@@ -180,7 +180,7 @@ export default function FormProduct({
                 </CardHeader>
                 <CardContent>
                   <Select name="stock" defaultValue={data?.stock}>
-                    <SelectTrigger>
+                    <SelectTrigger id="status" aria-label="Select a status">
                       <SelectValue placeholder="Select a status" />
                     </SelectTrigger>
                     <SelectContent>

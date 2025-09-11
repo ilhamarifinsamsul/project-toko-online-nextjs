@@ -4,6 +4,7 @@ import ListCategory from "./_components/list-category";
 import ListProduct from "./_components/list-product";
 import ListBrand from "./_components/list-brand";
 import ListCategorySkeleton from "./_components/skeletons/ListCategorySkeleton";
+import ListProductSkeleton from "./_components/skeletons/ListProductSkeleton";
 
 export default function LandingPage() {
   return (
@@ -146,13 +147,17 @@ export default function LandingPage() {
         <Suspense fallback={<ListCategorySkeleton count={8} />}>
           <ListCategory />
         </Suspense>
-        <ListProduct
-          title={
-            <>
-              Most Picked <br /> Quality Products
-            </>
-          }
-        />
+        <Suspense fallback={<ListProductSkeleton count={5} />}>
+          <ListProduct
+            title={
+              <>
+                Most Picked <br /> Quality Products
+              </>
+            }
+            type="most-picked"
+          />
+        </Suspense>
+
         <ListBrand />
         <ListProduct
           title={
@@ -160,6 +165,7 @@ export default function LandingPage() {
               New Releases <br /> From Official Stores
             </>
           }
+          type="new-release"
         />
       </section>
     </>
