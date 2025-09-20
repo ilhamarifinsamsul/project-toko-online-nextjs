@@ -22,7 +22,7 @@ export const schemaSignUp = SignInSchema.extend({
 export const schemaCategory = z.object({
   name: z
     .string({ message: "Name is required" })
-    .min(3, { message: "Name must be at least 3 characters long" }),
+    .min(2, { message: "Name must be at least 2 characters long" }),
 });
 
 export const schemaLocation = z.object({

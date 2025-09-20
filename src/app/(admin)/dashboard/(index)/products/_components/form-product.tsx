@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useEffect } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,11 +12,12 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AlertCircle, ChevronLeft, Upload } from "lucide-react";
+import { AlertCircle, ChevronLeft } from "lucide-react";
 import Link from "next/link";
+// import { useFormStatus } from "react";
 import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
-import { Brand, Product, Category, Location } from "@prisma/client";
+import { Product } from "@prisma/client";
 import { ReactNode, useActionState } from "react";
 import { ActionResult } from "@/types";
 import { toast } from "sonner";
@@ -25,7 +27,6 @@ import {
   SelectGroup,
   SelectItem,
   SelectLabel,
-  SelectScrollDownButton,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -35,16 +36,17 @@ import { storeProduct, updateProduct } from "../lib/actions";
 import { Textarea } from "@/components/ui/textarea";
 import UploadImages from "./upload-images";
 
-const initialState: ActionResult = {
-  error: "",
-  success: "",
-};
-
 interface FormProductProps {
   children: ReactNode;
   type: "ADD" | "EDIT";
   data?: Product | null;
 }
+
+const initialState: ActionResult = {
+  error: "",
+  success: "",
+};
+
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
@@ -60,36 +62,25 @@ export default function FormProduct({
   data,
 }: FormProductProps) {
   const router = useRouter();
-  const updateProductWithId = async (_: unknown, formData: FormData) => {
-    const result = await updateProduct(_, data?.id ?? 0, formData);
-    // kalau sukses tanpa error → redirect manual
-    if (!result.error) {
-      toast.success(result.success);
-      router.push("/dashboard/products");
-      router.refresh();
-    } else {
-      toast.error(result.error);
-    }
-    return result;
-  };
-
-  const submitProduct = async (_: unknown, formData: FormData) => {
-    const result = await storeProduct(_, formData);
-    // kalau sukses tanpa error → redirect manual
-    if (!result.error) {
-      toast.success(result.success);
-      router.push("/dashboard/products");
-      router.refresh();
-    } else {
-      toast.error(result.error);
-    }
-    return result;
-  };
+  const updateProductWithId = async (_: unknown, formData: FormData) =>
+    updateProduct(_, data?.id ?? 0, formData);
 
   const [state, formAction] = useActionState(
-    type === "ADD" ? submitProduct : updateProductWithId,
+    type === "ADD" ? storeProduct : updateProductWithId,
     initialState
   );
+
+  // Handle success response
+  useEffect(() => {
+    if (state.success) {
+      toast.success(state.success);
+      router.push("/dashboard/products");
+    }
+    if (state.error) {
+      toast.error(state.error);
+    }
+  }, [state, router]);
+
   return (
     <form action={formAction}>
       <div className="grid flex-1 items-start gap-4 sm:px-6 sm:py-0 md:gap-8">
@@ -136,6 +127,7 @@ export default function FormProduct({
                         defaultValue={data?.name}
                         type="text"
                         placeholder="Product name"
+                        required
                       />
                     </div>
 
@@ -147,6 +139,9 @@ export default function FormProduct({
                         name="price"
                         defaultValue={Number(data?.price ?? 0)}
                         placeholder="Product Price"
+                        min="0"
+                        step="0.01"
+                        required
                       />
                     </div>
 
@@ -179,7 +174,7 @@ export default function FormProduct({
                   <CardTitle>Product Status</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Select name="stock" defaultValue={data?.stock}>
+                  <Select name="stock" defaultValue={data?.stock || "ready"}>
                     <SelectTrigger id="status" aria-label="Select a status">
                       <SelectValue placeholder="Select a status" />
                     </SelectTrigger>
@@ -200,7 +195,7 @@ export default function FormProduct({
             <Button variant="outline" size="sm">
               Discard
             </Button>
-            <Button size="sm">Save Product</Button>
+            <SubmitButton />
           </div>
         </div>
       </div>

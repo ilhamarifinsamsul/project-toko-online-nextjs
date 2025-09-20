@@ -4,12 +4,12 @@ export async function getCategories() {
   try {
     const categories = await prisma.category.findMany({
       orderBy: {
-        id: "asc",
+        name: "asc",
       },
     });
     return categories;
   } catch (error) {
-    console.log(error);
+    console.error("Error fetching categories:", error);
     return [];
   }
 }

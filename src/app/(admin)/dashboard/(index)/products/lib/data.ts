@@ -5,7 +5,7 @@ export async function getProducts() {
   try {
     const products = await prisma.product.findMany({
       orderBy: {
-        name: "asc",
+        id: "asc",
       },
       select: {
         id: true,
@@ -50,7 +50,7 @@ export async function getProducts() {
 
     return responProduct;
   } catch (error) {
-    console.log(error);
+    console.error("Error fetching products:", error);
     return [];
   }
 }
